@@ -1,0 +1,26 @@
+datasource db {
+    provider = "postgresql"
+    // url      = "postgresql://postgres:postgres@localhost:5432/test-db"
+    url      = "postgresql://postgres:prisma@localhost:5434"
+}
+
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["interactiveTransactions"]
+    engineType      = "binary"
+}
+
+model post {
+    id          String  @id @db.VarChar(36)
+    description String? @db.VarChar(255)
+    userId      String  @db.VarChar(36)
+    user        user    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "FK_user_id_post_userId")
+
+    @@index([userId], map: "FK_user_id___post_userId")
+}
+
+model user {
+    id    String @id @db.VarChar(36)
+    name  String @db.VarChar(255)
+    posts post[]
+}

@@ -1,0 +1,31 @@
+version: "3"
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ${PWD}/prometheus:/prometheus-data
+    command: --config.file=/prometheus-data/prometheus.yml
+    ports:
+      - 9090:9090
+  graphite:
+    image: graphiteapp/graphite-statsd
+    ports:
+      - 80:80
+      - 2003-2004:2003-2004
+      - 2023-2024:2023-2024
+      - 8125:8125/udp
+      - 8126:8126
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - ${PWD}/grafana/datasources:/etc/grafana/provisioning/datasources/
+      - ${PWD}/grafana/dashboards:/etc/grafana/provisioning/dashboards/
+    ports:
+      - 3000:3000
+  postgres-14:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "prisma"
+    ports:
+      - "5434:5432"
