@@ -64,7 +64,7 @@ app.get("/metrics", async (_req, res: Response) => {
   try {
     // console.log("exporting");
     res.set("Content-Type", "text");
-    let res2 = await axios.get("http://127.0.0.1:4466/metrics");
+    let res2 = await axios.post("http://127.0.0.1:4466/metrics");
     res.end(res2.data);
   } catch (ex) {
     console.log("export error", ex);

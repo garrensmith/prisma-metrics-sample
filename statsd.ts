@@ -4,8 +4,6 @@ import axios from "axios";
 import express, { Request, Response } from "express";
 import StatsD from "hot-shots";
 
-let count = 0;
-
 const app = express();
 const port = 4000;
 
@@ -38,7 +36,7 @@ let diffMetrics = (metrics: any) => {
 
 let previousHistograms: any = null;
 let statsdSender = async () => {
-  let res = await axios.get("http://127.0.0.1:4466/metrics?format=json");
+  let res = await axios.post("http://127.0.0.1:4466/metrics?format=json"); // await prisma.$metrics.json()
   let metrics = res.data;
 
   metrics.counters.forEach((counter: any) => {
@@ -51,7 +49,6 @@ let statsdSender = async () => {
 
   if (previousHistograms === null) {
     previousHistograms = diffMetrics(metrics.histograms);
-    console.log("pp", previousHistograms);
     return;
   }
 
@@ -75,7 +72,7 @@ let statsdSender = async () => {
 
 setInterval(async () => await statsdSender(), 10000);
 
-app.get("/", async (req: Request, res: Response) => {
+app.get("/", async (_req: Request, res: Response) => {
   try {
     let users = await prisma.user.findMany();
 
@@ -112,7 +109,6 @@ app.get("/", async (req: Request, res: Response) => {
     });
 
     await Promise.allSettled([p1, p2]);
-    // let results: any = [];
     res.status(200).json({ count: results });
   } catch (e) {
     console.log("ERR", e);
@@ -124,7 +120,7 @@ app.get("/metrics", async (_req, res: Response) => {
   try {
     // console.log("exporting");
     res.set("Content-Type", "text");
-    let res2 = await axios.get("http://127.0.0.1:4466/metrics");
+    let res2 = await axios.post("http://127.0.0.1:4466/metrics");
     res.end(res2.data);
   } catch (ex) {
     console.log("export error", ex);
