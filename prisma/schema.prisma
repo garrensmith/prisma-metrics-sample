@@ -6,8 +6,8 @@ datasource db {
 
 generator client {
     provider        = "prisma-client-js"
-    previewFeatures = ["interactiveTransactions"]
-    engineType      = "binary"
+    previewFeatures = ["interactiveTransactions", "metrics"]
+    engineType = "library"
 }
 
 model post {

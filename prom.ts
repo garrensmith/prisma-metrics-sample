@@ -1,22 +1,25 @@
 import { PrismaClient } from "@prisma/client";
 import { inspect } from "util";
-import axios from "axios";
 import express, { Request, Response } from "express";
-import StatsD from "hot-shots";
+import axios from "axios";
 
 const app = express();
 const port = 4000;
 
-const prisma = new PrismaClient({
-  log: ["info", "error", "query", "warn"],
-  __internal: {
-    engine: {
-      endpoint: "http://127.0.0.1:4466",
-    },
-  },
-} as any);
+// const prisma = new PrismaClient({
+//   // log: ["info", "error", "query", "warn"],
+// });
 
-app.get("/", async (req: Request, res: Response) => {
+const prisma = new PrismaClient({
+  // log: ["info", "error", "query", "warn"],
+  // __internal: {
+  //   engine: {
+  //     endpoint: "http://127.0.0.1:4466",
+  //   },
+  // },
+});
+
+app.get("/", async (_req: Request, res: Response) => {
   try {
     let users = await prisma.user.findMany();
 
@@ -62,10 +65,10 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.get("/metrics", async (_req, res: Response) => {
   try {
-    // console.log("exporting");
     res.set("Content-Type", "text");
-    let res2 = await axios.post("http://127.0.0.1:4466/metrics");
-    res.end(res2.data);
+    await prisma.$connect();
+    let metrics = await prisma.$metrics.prometheus();
+    res.end(metrics);
   } catch (ex) {
     console.log("export error", ex);
     res.status(500).end(ex);

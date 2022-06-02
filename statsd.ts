@@ -9,12 +9,7 @@ const port = 4000;
 
 const prisma = new PrismaClient({
   log: ["info", "error", "query", "warn"],
-  __internal: {
-    engine: {
-      endpoint: "http://127.0.0.1:4466",
-    },
-  },
-} as any);
+});
 
 let statsd = new StatsD({
   port: 8125,
@@ -36,8 +31,7 @@ let diffMetrics = (metrics: any) => {
 
 let previousHistograms: any = null;
 let statsdSender = async () => {
-  let res = await axios.post("http://127.0.0.1:4466/metrics?format=json"); // await prisma.$metrics.json()
-  let metrics = res.data;
+  let metrics = await prisma.$metrics.json();
 
   metrics.counters.forEach((counter: any) => {
     statsd.gauge("prisma." + counter.key, counter.value, (...res) => {});
@@ -118,10 +112,9 @@ app.get("/", async (_req: Request, res: Response) => {
 
 app.get("/metrics", async (_req, res: Response) => {
   try {
-    // console.log("exporting");
     res.set("Content-Type", "text");
-    let res2 = await axios.post("http://127.0.0.1:4466/metrics");
-    res.end(res2.data);
+    let metrics = await prisma.$metrics.prometheus();
+    res.end(metrics);
   } catch (ex) {
     console.log("export error", ex);
     res.status(500).end(ex);
