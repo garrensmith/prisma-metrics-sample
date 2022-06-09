@@ -32,5 +32,5 @@ ab -v 4 -c 10  -t 320 http://127.0.0.1:4000/
 
 This will generate some activity. Stats will be sent to Statsd and Prometheus will scrape the `/metrics` endpoint.
 
-Navigate to `http://localhost:9090` to view grafana. You might need to login user/password: `admin/admin`.
+Navigate to `http://localhost:3000` to view grafana. You might need to login user/password: `admin/admin`.
 Then click on the dashboard. There should be a Statsd and a Prometheus dashboard.
