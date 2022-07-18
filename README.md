@@ -39,7 +39,7 @@ npm run dev
 In another terminal run:
 
 ```
-ab -v 4 -c 10  -t 320 http://127.0.0.1:4000/
+ab -v 4 -c 10  -t 320 http://localhost:4000/
 ```
 
 This will generate some activity. Stats will be sent to Statsd and Prometheus will scrape the `/metrics` endpoint.
