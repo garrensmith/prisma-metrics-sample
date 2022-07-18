@@ -15,3 +15,11 @@ datasources:
    type: 'graphite'                    # type of the data source
    url: 'http://graphite:80'         # url of the prom instance
    version: 1   
+-  access: 'proxy'
+   editable: true
+   is_default: false                      # whether this should be the default DS
+   name: 'Jaeger'                         # name of the datasource
+   org_id: 1                             # id of the organization to tie this datasource to
+   type: 'jaeger'                    # type of the data source
+   url: 'http://otel:16686'         # url of the prom instance
+
