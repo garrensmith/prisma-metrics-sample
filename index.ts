@@ -25,7 +25,7 @@ const prisma = new PrismaClient({
 statsDSetup(prisma);
 
 app.get("/", async (_req: Request, res: Response) => {
-  await tracer.startActiveSpan("simple-query", async (span) => {
+  await tracer.startActiveSpan("GET /", async (span) => {
     try {
       let posts = [];
       posts.push({
@@ -55,7 +55,7 @@ app.get("/", async (_req: Request, res: Response) => {
 });
 
 app.get("/many", async (_req: Request, res: Response) => {
-  tracer.startActiveSpan("lots-of-nested-queries", async (span) => {
+  tracer.startActiveSpan("GET /many", async (span) => {
     try {
       let users = await prisma.user.findMany();
 
@@ -133,5 +133,5 @@ app.get("/metrics", async (_req, res: Response) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Example app listening on http://localhost:${port}`);
 });
