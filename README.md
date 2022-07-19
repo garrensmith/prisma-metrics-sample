@@ -16,7 +16,13 @@ To get this running, run:
 docker compose up -d
 ```
 
-This creats a postgresdb, graphite for statsd, Prometheus, Jaeger for tracing and Grafana.
+This creates a postgresdb, graphite for statsd, Prometheus, Jaeger for tracing and Grafana. You'll also need to run:
+
+```
+npm install
+```
+
+To install Prisma and the other dependencies needed to run the demo server.
 
 Migrate the db:
 
